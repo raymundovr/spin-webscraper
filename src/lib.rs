@@ -8,12 +8,12 @@ use spin_sdk::{
 use url::Url;
 
 #[derive(Debug, Deserialize)]
-struct CrawlerPayload {
+struct ScraperRequest {
     url: String,
 }
 
 #[derive(Debug, Serialize)]
-struct CrawlerResponse {
+struct ScraperResponse {
     title: String,
     description: String,
 }
@@ -22,7 +22,7 @@ struct CrawlerResponse {
 #[http_component]
 fn webscraper(req: Request) -> Result<Response> {
     let body = req.body().clone().unwrap_or_default();
-    let payload: CrawlerPayload = serde_json::from_slice(&body)?;
+    let payload: ScraperRequest = serde_json::from_slice(&body)?;
 
     let url = Url::parse(&payload.url)?;
 
@@ -52,12 +52,12 @@ fn webscraper(req: Request) -> Result<Response> {
                 None => "".to_string(),
             };
 
-            CrawlerResponse {
+            ScraperResponse {
                 title,
                 description,
             }
         }
-        _ => CrawlerResponse {
+        _ => ScraperResponse {
             title: String::from(""),
             description: String::from(""),
         },
